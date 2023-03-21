@@ -44,6 +44,7 @@ def on_message(wsapp, message):
         return
     else:
         print(f">> killmail_id : {killmail_id} : 🟢 Hambart")
+        print(f'json_string = {json_string}')
 
     bot.send_message(chat_id=CHAT_ID,
                      text=response)
