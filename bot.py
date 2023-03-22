@@ -1,6 +1,7 @@
 import websocket
 import json
 import telebot
+import threading
 
 import botsecrets
 import messagebuilder
@@ -29,6 +30,13 @@ def log(message):
     '''
     print(f'✅ {message}')
 
+def on_close(wsapp):
+    '''
+    При переподключении происходит закрытие коннекта,
+      это значит, что коннект нужно восстановить заново
+    '''
+    main()
+
 def on_message(wsapp, message):
     '''
     Реакция на новое событие от сервера WS
@@ -36,19 +44,12 @@ def on_message(wsapp, message):
     json_string = message
     json_dict = json.loads(json_string)
 
-    killmail_id = json_dict['killmail_id']
-
     response = messagebuilder.response(json_dict=json_dict)
-    if response is None:
-        print(f">> killmail_id : {killmail_id} : ❌ No Hambart")
-        return
-    else:
-        print(f">> killmail_id : {killmail_id} : 🟢 Hambart")
-        print(f'json_string = {json_string}')
+    # if response is None:
+    #     return
 
     bot.send_message(chat_id=CHAT_ID,
                      text=response)
-
 
 def on_open(wsapp):
     '''
@@ -64,8 +65,10 @@ def run_zkillboard_ws():
     log("Run ZKillBoard websockets!")
     ws = websocket.WebSocketApp(url=KILLBOARD_URL,
                                 on_open=on_open,
-                                on_message=on_message)
-    ws.run_forever()
+                                on_message=on_message,
+                                on_close=on_close)
+    wst = threading.Thread(target=ws.run_forever)
+    wst.start()
 
 # DEBUG ONLY
 def run_telegram_bot():
