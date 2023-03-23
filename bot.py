@@ -72,7 +72,7 @@ def on_message(wsapp, message):
         send_killmail(killmail_response=response)
         send_random_anekdot()
     else:
-        print('Error response')
+        print('response == None')
 
 def on_open(wsapp):
     '''
