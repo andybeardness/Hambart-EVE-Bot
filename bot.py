@@ -65,9 +65,9 @@ def on_message(wsapp, message):
     Реакция на новое событие от сервера WS
     '''
     log(f"OnMessage!")
+
     print(f"killmail_count = {killmail_count}")
     killmail_count += 1
-
     
     json_string = message
     json_dict = json.loads(json_string)
@@ -77,7 +77,6 @@ def on_message(wsapp, message):
         print(f"killmail = {killmail_id}")
     except:
         pass
-    
 
     response = messagebuilder.response(json_dict=json_dict)
     
