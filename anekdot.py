@@ -29,8 +29,12 @@ def __request_anekot():
 
     return trimmed
 
+def __pretty_anekdot():
+    anek = __request_anekot()
+    return f"Случайный анекдот :\n\n{anek}"
+
 def get_anekdot():
-    return __request_anekot()
+    return __pretty_anekdot()
 
 if __name__ == '__main__':
     print(get_anekdot())

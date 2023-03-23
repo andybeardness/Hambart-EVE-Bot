@@ -5,6 +5,7 @@ import threading
 
 import botsecrets
 import messagebuilder
+import anekdot
 
 # Получение секретов
 HAMBART_ID = botsecrets.HAMBART_ID
@@ -23,6 +24,25 @@ def echo_all(message):
     '''
     bot.send_message(chat_id=message.chat.id,
                      text=message.chat.id)
+    
+def send_killmail(killmail_response):
+    '''
+    Отправляет сообщение о killmail
+    '''
+    bot.send_message(chat_id=CHAT_ID,
+                     text=killmail_response)
+
+def send_random_anekdot():
+    '''
+    Отправляет рандомный анекдот
+    '''
+    try:
+        anekdot_response = anekdot.get_anekdot()
+    except Exception as e:
+        anekdot_response = "Анекдота не будет"
+    
+    bot.send_message(chat_id=CHAT_ID,
+                     text=anekdot_response)
 
 def log(message):
     '''
@@ -35,27 +55,30 @@ def on_close(wsapp):
     При переподключении происходит закрытие коннекта,
       это значит, что коннект нужно восстановить заново
     '''
+    log("OnClose!")
     main()
 
 def on_message(wsapp, message):
     '''
     Реакция на новое событие от сервера WS
     '''
+    log("OnMessage!")
     json_string = message
     json_dict = json.loads(json_string)
 
     response = messagebuilder.response(json_dict=json_dict)
-    # if response is None:
-    #     return
-
-    bot.send_message(chat_id=CHAT_ID,
-                     text=response)
+    
+    if response is not None:
+        send_killmail(killmail_response=response)
+        send_random_anekdot()
+    else:
+        print('Error response')
 
 def on_open(wsapp):
     '''
     Событие при подключении к WS
     '''
-    log("Send killstream action message!")
+    log("OnOpen!")
     wsapp.send(KILLBOARD_START_MESSAGE)
 
 def run_zkillboard_ws():
@@ -63,12 +86,15 @@ def run_zkillboard_ws():
     Запуск ZKB WS
     '''
     log("Run ZKillBoard websockets!")
-    ws = websocket.WebSocketApp(url=KILLBOARD_URL,
-                                on_open=on_open,
-                                on_message=on_message,
-                                on_close=on_close)
-    wst = threading.Thread(target=ws.run_forever)
-    wst.start()
+    try:
+        ws = websocket.WebSocketApp(url=KILLBOARD_URL,
+                                    on_open=on_open,
+                                    on_message=on_message,
+                                    on_close=on_close)
+        wst = threading.Thread(target=ws.run_forever)
+        wst.start()
+    except:
+        print("Error! :C")
 
 # DEBUG ONLY
 def run_telegram_bot():
