@@ -14,6 +14,8 @@ CHAT_ID = botsecrets.CHAT_ID
 KILLBOARD_URL = botsecrets.KILLBOARD_URL
 KILLBOARD_START_MESSAGE = botsecrets.KILLBOARD_START_MESSAGE
 
+killmail_count = 0
+
 # ТГ бот
 bot = telebot.TeleBot(BOT_TOKEN)
 
@@ -62,7 +64,9 @@ def on_message(wsapp, message):
     '''
     Реакция на новое событие от сервера WS
     '''
-    log("OnMessage!")
+    log(f"OnMessage! ({killmail_count})")
+    killmail_count += 1
+    
     json_string = message
     json_dict = json.loads(json_string)
 
@@ -93,8 +97,8 @@ def run_zkillboard_ws():
                                     on_close=on_close)
         wst = threading.Thread(target=ws.run_forever)
         wst.start()
-    except:
-        print("Error! :C")
+    except Exception as e:
+        print(f"Error : ({e})")
 
 # DEBUG ONLY
 def run_telegram_bot():
