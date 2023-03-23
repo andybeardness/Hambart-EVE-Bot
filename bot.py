@@ -2,6 +2,7 @@ import websocket
 import json
 import telebot
 import threading
+from datetime import datetime
 
 import botsecrets
 import messagebuilder
@@ -13,8 +14,6 @@ BOT_TOKEN = botsecrets.BOT_TOKEN
 CHAT_ID = botsecrets.CHAT_ID
 KILLBOARD_URL = botsecrets.KILLBOARD_URL
 KILLBOARD_START_MESSAGE = botsecrets.KILLBOARD_START_MESSAGE
-
-killmail_count = 0
 
 # ТГ бот
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -64,19 +63,10 @@ def on_message(wsapp, message):
     '''
     Реакция на новое событие от сервера WS
     '''
-    log(f"OnMessage!")
+    log(f"OnMessage! {datetime.now()}")
 
-    print(f"killmail_count = {killmail_count}")
-    killmail_count += 1
-    
     json_string = message
     json_dict = json.loads(json_string)
-
-    try:
-        killmail_id = json_dict["killmail_id"]
-        print(f"killmail = {killmail_id}")
-    except:
-        pass
 
     response = messagebuilder.response(json_dict=json_dict)
     
