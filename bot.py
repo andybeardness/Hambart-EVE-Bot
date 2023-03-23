@@ -52,7 +52,7 @@ def log(message):
     '''
     print(f'✅ {message}')
 
-def on_close(wsapp):
+def on_close(wsapp, code, msg):
     '''
     При переподключении происходит закрытие коннекта,
       это значит, что коннект нужно восстановить заново
