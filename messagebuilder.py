@@ -104,8 +104,12 @@ def response(json_dict):
         return None
     
     CAPSULE_SHIP_TYPE = 670
+    NONE_SHIP_TYPE = None
     ship_type_id = __ship_type_id(json_dict=json_dict)
-    if ship_type_id == CAPSULE_SHIP_TYPE:
+    is_ship_type_incorrect = \
+        ship_type_id == CAPSULE_SHIP_TYPE \
+        or ship_type_id == NONE_SHIP_TYPE
+    if is_ship_type_incorrect:
         return None
 
     hambart_role = __hambart_role(attackers_ids=attackers_ids,
