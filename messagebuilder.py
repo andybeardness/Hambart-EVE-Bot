@@ -31,6 +31,12 @@ def __victim_id(json_dict):
     except Exception as e:
         # Возможны случаи, когда тут придут данные без 'character_id'
         return -1
+    
+def __ship_type_id(json_dict):
+    try:
+        return json_dict['victim']['ship_type_id']
+    except Exception as e:
+        return None
 
 def __hambart_role(attackers_ids, victim_id):
     '''
@@ -40,11 +46,10 @@ def __hambart_role(attackers_ids, victim_id):
     Если Хамбарт был жертвой .... то 'victim'
     Если что-то другое .......... то None
     '''
-    # Это нужно для дебага, чтобы тестить на тех фрагах, где нет Хамбарта,
-    #   чтобы реагировать на каждое сообщение, а не ждать фрага от Хамбарта
-    if HAMBART_ID == 0:
+    DEBUG_HAMBART_ID = 0
+    if HAMBART_ID == DEBUG_HAMBART_ID:
         return 'attacker'
-
+    
     if HAMBART_ID in attackers_ids:
         return 'attacker'
     
@@ -96,6 +101,11 @@ def response(json_dict):
 
     victim_id = __victim_id(json_dict=json_dict)
     if victim_id is None:
+        return None
+    
+    CAPSULE_SHIP_TYPE = 670
+    ship_type_id = __ship_type_id(json_dict=json_dict)
+    if ship_type_id == CAPSULE_SHIP_TYPE:
         return None
 
     hambart_role = __hambart_role(attackers_ids=attackers_ids,
