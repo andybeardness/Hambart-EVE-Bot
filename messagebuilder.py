@@ -107,8 +107,8 @@ def response(json_dict):
     NONE_SHIP_TYPE = None
     ship_type_id = __ship_type_id(json_dict=json_dict)
     is_ship_type_incorrect = \
-        ship_type_id == CAPSULE_SHIP_TYPE \
-        or ship_type_id == NONE_SHIP_TYPE
+        ship_type_id == CAPSULE_SHIP_TYPE or \
+        ship_type_id == NONE_SHIP_TYPE
     if is_ship_type_incorrect:
         return None
 
